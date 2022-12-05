@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PdfMerge": {
+      "commandName": "Project",
+      "commandLineArgs": "\"c:\\Data\\_tmp\\F24 - w8 - bolli I II III trim 2022 Barbieri.pdf\" \"c:\\Data\\_tmp\\F24 - w8 IMU dicembre Barbieri.pdf\" \"c:\\Data\\_tmp\\prova_colore_brother.jpg\""
+    }
+  }
+}
