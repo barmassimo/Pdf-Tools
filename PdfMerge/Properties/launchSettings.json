@@ -2,7 +2,7 @@
   "profiles": {
     "PdfMerge": {
       "commandName": "Project",
-      "commandLineArgs": "pdf_001.pdf image_001.png image_002.png",
+      "commandLineArgs": "pdf_001.pdf image_001.png image_002.png --outFile=example.pdf",
       "workingDirectory": "..\\Examples"
     }
   }

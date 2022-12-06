@@ -1,4 +1,5 @@
-﻿using PdfSharpCore.Drawing;
+﻿using Microsoft.Extensions.Configuration;
+using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System.Reflection;
@@ -7,9 +8,15 @@ Console.WriteLine($"PdfMerge v." + Assembly.GetEntryAssembly()?.GetName().Versio
 Console.WriteLine($"Merges one or more jpg, png or pdf files into a single pdf file.");
 Console.WriteLine();
 
+var builder = new ConfigurationBuilder().AddCommandLine(args);
+var configuration = builder.Build();
+
+args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
+
 if (args.Length==0)
 {
-    Console.WriteLine($"Usage: PdfMerge.exe file1 [file2 file3 ... fileN]");
+    Console.WriteLine($"Usage: PdfMerge.exe file1 [file2 file3 ... fileN] [--outFile=outFileName]");
+    Console.WriteLine($"Example: PdfMerge.exe pdf_001.pdf image_001.png image_002.png --outFile=example.pdf");
     return 1;
 }
 
@@ -86,7 +93,7 @@ using (PdfDocument outPdf = new PdfDocument())
         Console.WriteLine("Ok");
     }
 
-    var outFile = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
+    var outFile = configuration["outFile"] ?? DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
 
     outPdf.Save(outFile);
 
