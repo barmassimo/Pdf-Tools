@@ -5,7 +5,6 @@ using PdfSharpCore.Pdf.IO;
 using System.Reflection;
 
 Console.WriteLine($"PdfMerge v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
-Console.WriteLine($"Merges one or more jpg, png or pdf files into a single pdf file.");
 Console.WriteLine();
 
 var builder = new ConfigurationBuilder().AddCommandLine(args);
@@ -13,10 +12,13 @@ var configuration = builder.Build();
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
 
-if (args.Length==0)
+if (args.Length == 0)
 {
-    Console.WriteLine($"Usage: PdfMerge.exe file1 [file2 file3 ... fileN] [--outFile=outFileName]");
-    Console.WriteLine($"Example: PdfMerge.exe pdf_001.pdf image_001.png image_002.png --outFile=example.pdf");
+    Console.WriteLine($"Description:\n  Merges one or more jpg, png or pdf files into a single pdf file\n");
+    Console.WriteLine($"Usage:\n  PdfMerge.exe files [options]\n");
+    Console.WriteLine($"Arguments:\n  files:  list of jpg, png, pdf files\n");
+    Console.WriteLine($"Options:\n  --outFile, --of:  output file name (the default is yyyyMMdd_HHmmss.pdf)\n");
+    Console.WriteLine($"Example:\n  PdfMerge.exe pdf_001.pdf image_001.png image_002.png --outFile=example.pdf\n");
     return 1;
 }
 
@@ -49,7 +51,8 @@ using (PdfDocument outPdf = new PdfDocument())
         {
             using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
             {
-                CopyPages(doc, outPdf);
+                var nPages = CopyPages(doc, outPdf);
+                Console.WriteLine($"Ok ({nPages} pages)");
             }
         }
         else if (file.ToLower().EndsWith(".jpg") || file.ToLower().EndsWith(".png"))
@@ -88,24 +91,28 @@ using (PdfDocument outPdf = new PdfDocument())
             }
 
             gfx.DrawImage(image, startX, startY, finalX, finalY);
+
+            Console.WriteLine("Ok");
         }
 
-        Console.WriteLine("Ok");
     }
 
-    var outFile = configuration["outFile"] ?? DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
+    var outFile = configuration["outFile"] ?? configuration["of"] ?? DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
 
     outPdf.Save(outFile);
 
+    Console.WriteLine();
     Console.WriteLine($"File '{outFile}' created.");
 }
 
 return 0;
 
-void CopyPages(PdfDocument from, PdfDocument to)
+int CopyPages(PdfDocument from, PdfDocument to)
 {
     for (int i = 0; i < from.PageCount; i++)
     {
         to.AddPage(from.Pages[i]);
     }
+
+    return from.PageCount;
 }
