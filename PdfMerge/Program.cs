@@ -17,8 +17,8 @@ if (args.Length == 0)
     Console.WriteLine($"Description:\n  Merges one or more jpg, png or pdf files into a single pdf file\n");
     Console.WriteLine($"Usage:\n  PdfMerge.exe files [options]\n");
     Console.WriteLine($"Arguments:\n  files:  list of jpg, png, pdf files\n");
-    Console.WriteLine($"Options:\n  --outFile, --of:  output file name (the default is yyyyMMdd_HHmmss.pdf)\n");
-    Console.WriteLine($"Example:\n  PdfMerge.exe pdf_001.pdf image_001.png image_002.png --outFile=example.pdf\n");
+    Console.WriteLine($"Options:\n  --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)\n");
+    Console.WriteLine($"Example:\n  PdfMerge.exe mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf\n");
     return 1;
 }
 
@@ -97,7 +97,7 @@ using (PdfDocument outPdf = new PdfDocument())
 
     }
 
-    var outFile = configuration["outFile"] ?? configuration["of"] ?? DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
+    var outFile = configuration["outFile"] ?? configuration["of"] ?? "merged_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
 
     outPdf.Save(outFile);
 
