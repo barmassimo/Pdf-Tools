@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "MB.PdfTools.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf",
+      "workingDirectory": "..\\Examples"
+    }
+  }
+}

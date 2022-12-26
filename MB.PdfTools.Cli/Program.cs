@@ -4,6 +4,8 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System.Reflection;
 
+var executableName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".exe";
+
 Console.WriteLine($"PdfTools v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
 Console.WriteLine();
 
@@ -15,10 +17,10 @@ args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
 if (args.Length == 0)
 {
     Console.WriteLine($"Description:\n  Merges one or more jpg, png or pdf files into a single pdf file\n");
-    Console.WriteLine($"Usage:\n  PdfTools.exe files [options]\n");
+    Console.WriteLine($"Usage:\n  {executableName} files [options]\n");
     Console.WriteLine($"Arguments:\n  files:  list of jpg, png, pdf files\n");
     Console.WriteLine($"Options:\n  --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)\n");
-    Console.WriteLine($"Example:\n  PdfTools.exe mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf\n");
+    Console.WriteLine($"Example:\n  {executableName} mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf\n");
     return 1;
 }
 
