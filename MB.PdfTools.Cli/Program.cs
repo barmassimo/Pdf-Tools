@@ -9,18 +9,50 @@ var executableName = System.Reflection.Assembly.GetExecutingAssembly().GetName()
 Console.WriteLine($"PdfTools v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
 Console.WriteLine();
 
+var help = $@"Description:
+An utility to merge and split pdf files and images
+
+Usage:
+  {executableName} command files [options]
+
+Available commands:
+  m, merge: merges one or more jpg, png or pdf files into a single pdf file
+  
+Parameters:
+  files: a list of jpg, png, pdf files
+  
+Options:
+  --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)
+
+Example:
+  {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
+";
+
 var builder = new ConfigurationBuilder().AddCommandLine(args);
 var configuration = builder.Build();
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
 
+PdfToolsCommand? command = null;
+
+if (args.Length > 0)
+{
+    if (args[0] == "m" || args[0] == "merge") command = PdfToolsCommand.Merge;
+
+    if (command == null)
+    {
+        Console.WriteLine(help);
+
+        return 1;
+    }
+}
+
+args = args.Skip(1).ToArray();
+
 if (args.Length == 0)
 {
-    Console.WriteLine($"Description:\n  Merges one or more jpg, png or pdf files into a single pdf file\n");
-    Console.WriteLine($"Usage:\n  {executableName} files [options]\n");
-    Console.WriteLine($"Arguments:\n  files:  list of jpg, png, pdf files\n");
-    Console.WriteLine($"Options:\n  --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)\n");
-    Console.WriteLine($"Example:\n  {executableName} mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf\n");
+    Console.WriteLine(help);
+    
     return 1;
 }
 
@@ -117,4 +149,9 @@ int CopyPages(PdfDocument from, PdfDocument to)
     }
 
     return from.PageCount;
+}
+
+public enum PdfToolsCommand
+{
+    Merge
 }
