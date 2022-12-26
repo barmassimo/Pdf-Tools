@@ -8,7 +8,7 @@
     <PackageIcon>favicon.ico</PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyVersion></AssemblyVersion>
-    <Version>2.1.0</Version>
+    <Version>3.0.0</Version>
     <AssemblyName>pdft</AssemblyName>
   </PropertyGroup>
 
@@ -18,7 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="7.0.0" />
-    <PackageReference Include="PdfSharpCore" Version="1.3.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MB.PdfTools\MB.PdfTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>

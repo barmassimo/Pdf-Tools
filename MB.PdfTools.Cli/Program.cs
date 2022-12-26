@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
-using PdfSharpCore.Drawing;
-using PdfSharpCore.Pdf;
-using PdfSharpCore.Pdf.IO;
 using System.Reflection;
 
-var executableName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".exe";
+
+using MB.PdfTools;
+
+var executableName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
 
 Console.WriteLine($"PdfTools v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
 Console.WriteLine();
+
+var builder = new ConfigurationBuilder().AddCommandLine(args);
+var configuration = builder.Build();
 
 var help = $@"Description:
 An utility to merge and split pdf files and images
@@ -25,34 +28,22 @@ Options:
   --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)
 
 Example:
-  {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
+  {executableName} merge mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
 ";
-
-var builder = new ConfigurationBuilder().AddCommandLine(args);
-var configuration = builder.Build();
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
 
-PdfToolsCommand? command = null;
+string? command = null;
 
 if (args.Length > 0)
 {
-    if (args[0] == "m" || args[0] == "merge") command = PdfToolsCommand.Merge;
-
-    if (command == null)
-    {
-        Console.WriteLine(help);
-
-        return 1;
-    }
+    command = args[0];
+    args = args.Skip(1).ToArray();
 }
-
-args = args.Skip(1).ToArray();
 
 if (args.Length == 0)
 {
     Console.WriteLine(help);
-    
     return 1;
 }
 
@@ -68,90 +59,34 @@ foreach (var file in args)
 
     var extension = info.Extension.ToLower();
 
-    if (extension!=".pdf" && extension != ".jpg" && extension != ".png")
+    if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
     {
         Console.WriteLine($"Only pdf, jpg and png files accepted. Exiting");
         return 1;
     }
 }
 
-using (PdfDocument outPdf = new PdfDocument())
+if (command == "m" || command == "merge")
 {
-    foreach (var file in args)
-    {
-        Console.Write($"Adding file '{file}'... ");
-
-        if (file.ToLower().EndsWith(".pdf"))
-        {
-            using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
-            {
-                var nPages = CopyPages(doc, outPdf);
-                Console.WriteLine($"Ok ({nPages} pages)");
-            }
-        }
-        else if (file.ToLower().EndsWith(".jpg") || file.ToLower().EndsWith(".png"))
-        {
-            PdfPage page = outPdf.AddPage();
-            // page.Size = PdfSharpCore.PageSize.A5;
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            XImage image = XImage.FromFile(file);
-
-            float imgX = image.PixelWidth;
-            float imgY = image.PixelHeight;
-
-            float pageX = (int)page.MediaBox.Size.Width;
-            float pageY = (int)page.MediaBox.Size.Height;
-
-            var imgRatio = imgX / imgY;
-            var pageRatio = pageX / pageY;
-
-            int startX, startY, finalX, finalY;
-
-            if (imgRatio > pageRatio)
-            {
-                finalX = (int)pageX;
-                finalY = (int)(imgY * pageX / imgX);
-
-                startX = 0;
-                startY = (int)(pageY - finalY) / 2;
-            }
-            else 
-            {
-                finalX = (int)(imgX * pageY / imgY);
-                finalY = (int)pageY;
-
-                startX = (int)(pageX - finalX) / 2; ;
-                startY = 0;
-            }
-
-            gfx.DrawImage(image, startX, startY, finalX, finalY);
-
-            Console.WriteLine("Ok");
-        }
-
-    }
-
     var outFile = configuration["outFile"] ?? configuration["of"] ?? "merged_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
 
-    outPdf.Save(outFile);
-
-    Console.WriteLine();
-    Console.WriteLine($"File '{outFile}' created.");
-}
-
-return 0;
-
-int CopyPages(PdfDocument from, PdfDocument to)
-{
-    for (int i = 0; i < from.PageCount; i++)
+    var result = new MergeCommand().Execute(new MergeCommandParameters(args, outFile));
+    if (result.IsOk)
     {
-        to.AddPage(from.Pages[i]);
+        Console.WriteLine(result.Output);
+        return 0;
     }
-
-    return from.PageCount;
+    else
+    {
+        Console.WriteLine(result.Output);
+        Console.WriteLine(result.ErrorMessage);
+        return 1;
+    }
 }
-
-public enum PdfToolsCommand
+else
 {
-    Merge
+    Console.WriteLine($"Command '{command}' not available. Exiting.");
+    return 1;
 }
+
+

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MB.PdfTools.Cli", "MB.PdfTools.Cli\MB.PdfTools.Cli.csproj", "{97794BC2-7CC7-41B4-B927-99DE045D6AFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MB.PdfTools", "MB.PdfTools\MB.PdfTools.csproj", "{699A094B-BCB6-4048-A864-37F11A2C8414}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{97794BC2-7CC7-41B4-B927-99DE045D6AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97794BC2-7CC7-41B4-B927-99DE045D6AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97794BC2-7CC7-41B4-B927-99DE045D6AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{699A094B-BCB6-4048-A864-37F11A2C8414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{699A094B-BCB6-4048-A864-37F11A2C8414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{699A094B-BCB6-4048-A864-37F11A2C8414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{699A094B-BCB6-4048-A864-37F11A2C8414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
