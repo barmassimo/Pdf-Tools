@@ -121,4 +121,49 @@ namespace MB.PdfTools
             return from.PageCount;
         }
     }
+
+    public class SplitCommandParameters
+    {
+        public string[] Files { get; private set; }
+        public string OutFile { get; private set; }
+
+        public SplitCommandParameters(IEnumerable<string> files, string outFiile)
+        {
+            Files = files.ToArray();
+            OutFile = outFiile;
+        }
+    }
+
+    public class SplitCommand : ICommand<SplitCommandParameters>
+    {
+        public CommandResult Execute(SplitCommandParameters commandParameters)
+        {
+            var sbOut = new StringBuilder();
+            var totalPages = 1;
+
+            foreach (var file in commandParameters.Files)
+            {
+                sbOut.Append($"Splitting file '{file}'... ");
+
+                using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
+                {
+                    var nPages = doc.PageCount;
+
+                    foreach (var page in doc.Pages)
+                    {
+                        var newDoc = new PdfDocument();
+                        newDoc.Pages.Add(page);
+                        newDoc.Save($"{commandParameters.OutFile}_{totalPages++:0000}.pdf");
+                    }
+
+                    sbOut.AppendLine($"Ok ({nPages} pages)");
+                }
+            }
+
+            sbOut.AppendLine();
+            sbOut.AppendLine($"Files created.");
+
+            return CommandResult.Ok(sbOut.ToString());
+        }
+    }
 }
