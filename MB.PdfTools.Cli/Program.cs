@@ -42,7 +42,7 @@ Options:
 
 Example:
   {executableName} s mydoc.pdf --outFile=hello
-  (generates hello0001.pdf, hello0002.pdf, ...
+  (generates hello_0001.pdf, hello_0002.pdf, ...)
 ";
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
