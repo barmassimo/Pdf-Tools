@@ -149,24 +149,10 @@ namespace MB.PdfTools
 
             foreach (var file in commandParameters.Files)
             {
-                sbOut.Append($"Splitting file '{file}'... ");
-
-                //using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
-                //{
-                //    var nPages = doc.PageCount;
-                //
-                //    foreach (var page in doc.Pages)
-                //    {
-                //        var newDoc = new PdfDocument();
-                //        newDoc.Pages.Add(page);
-                //        newDoc.Save($"{commandParameters.OutFile}_{totalPages++:0000}.pdf");
-                //    }
-                //
-                //    sbOut.AppendLine($"Ok ({nPages} pages)");
-                //}
-
                 using (var images = new MagickImageCollection())
                 {
+                    sbOut.Append($"Splitting file '{file}'... ");
+
                     images.Read(file, settings);
 
                     foreach (var image in images)
@@ -180,7 +166,7 @@ namespace MB.PdfTools
             }
 
             sbOut.AppendLine();
-            sbOut.AppendLine($"Files created.");
+            sbOut.AppendLine($"File(s) created.");
 
             return CommandResult.Ok(sbOut.ToString());
         }

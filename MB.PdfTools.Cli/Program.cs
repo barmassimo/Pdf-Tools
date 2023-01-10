@@ -32,7 +32,7 @@ Example:
   {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
 
 ## split
-  s, split: split one or more pdf file into n jpg images, one per page
+  s, split: splits one or more pdf files into n jpg images, one per page
   (note: this command requires ghostscript: https://ghostscript.com/releases/gsdnld.html)
   
 Parameters:
@@ -121,7 +121,7 @@ else if (command == "s" || command == "split")
 
     var outFile = configuration["outFile"] ?? configuration["of"] ?? "splitted_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-    if (outFile.ToLower().EndsWith(".pdf"))
+    if (outFile.ToLower().EndsWith(".jpg"))
     {
         outFile = outFile.Substring(0, outFile.Length - 4);
     }
