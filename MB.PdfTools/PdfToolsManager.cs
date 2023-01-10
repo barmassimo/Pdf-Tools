@@ -2,6 +2,7 @@
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System.Text;
+using ImageMagick;
 
 namespace MB.PdfTools
 {
@@ -141,22 +142,40 @@ namespace MB.PdfTools
             var sbOut = new StringBuilder();
             var totalPages = 1;
 
+            //MagickNET.SetGhostscriptDirectory(@"c:\ghostScript");
+
+            var settings = new MagickReadSettings();
+            settings.Density = new Density(300, 300);
+
             foreach (var file in commandParameters.Files)
             {
                 sbOut.Append($"Splitting file '{file}'... ");
 
-                using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
-                {
-                    var nPages = doc.PageCount;
+                //using (PdfDocument doc = PdfReader.Open(file, PdfDocumentOpenMode.Import))
+                //{
+                //    var nPages = doc.PageCount;
+                //
+                //    foreach (var page in doc.Pages)
+                //    {
+                //        var newDoc = new PdfDocument();
+                //        newDoc.Pages.Add(page);
+                //        newDoc.Save($"{commandParameters.OutFile}_{totalPages++:0000}.pdf");
+                //    }
+                //
+                //    sbOut.AppendLine($"Ok ({nPages} pages)");
+                //}
 
-                    foreach (var page in doc.Pages)
+                using (var images = new MagickImageCollection())
+                {
+                    images.Read(file, settings);
+
+                    foreach (var image in images)
                     {
-                        var newDoc = new PdfDocument();
-                        newDoc.Pages.Add(page);
-                        newDoc.Save($"{commandParameters.OutFile}_{totalPages++:0000}.pdf");
+                        image.Format = MagickFormat.Jpg;
+                        image.Write($"{commandParameters.OutFile}_{totalPages++:0000}.jpg");
                     }
 
-                    sbOut.AppendLine($"Ok ({nPages} pages)");
+                    sbOut.AppendLine($"Ok ({images.Count} pages)");
                 }
             }
 

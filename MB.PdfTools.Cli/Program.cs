@@ -32,17 +32,18 @@ Example:
   {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
 
 ## split
-  s, split: split one or more pdf file into n pdf files, one per page
+  s, split: split one or more pdf file into n jpg images, one per page
+  (note: this command requires ghostscript: https://ghostscript.com/releases/gsdnld.html)
   
 Parameters:
   files: a list of pdf files
   
 Options:
-  --outFile, --of:  output file name (the default is splitted_yyyyMMdd_HHmmss_n.pdf)
+  --outFile, --of:  output file name (the default is splitted_yyyyMMdd_HHmmss_n.jpg)
 
 Example:
   {executableName} s mydoc.pdf --outFile=hello
-  (generates hello_0001.pdf, hello_0002.pdf, ...)
+  (generates hello_0001.jpg, hello_0002.jpg, ...)
 ";
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
