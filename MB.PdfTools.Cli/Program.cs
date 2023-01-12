@@ -27,9 +27,11 @@ Parameters:
   
 Options:
   --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)
+  --orientation, --or: orientation for pages created from images
+                       values are: p=portrait (default), l=landscape, a=auto
 
 Examples:
-  {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
+  {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf --or=a
 
 ## split
   s, split: splits one or more pdf files into n jpg images, one per page
@@ -86,8 +88,9 @@ if (command == "m" || command == "merge")
     }
 
     var outFile = configuration["outFile"] ?? configuration["of"] ?? "merged_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
+    var orientation = configuration["orientation"] ?? configuration["or"];
 
-    var result = new MergeCommand().Execute(new MergeCommandParameters(args, outFile));
+    var result = new MergeCommand().Execute(new MergeCommandParameters(args, outFile, orientation));
     if (result.IsOk)
     {
         Console.WriteLine(result.Output);

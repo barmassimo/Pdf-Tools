@@ -34,11 +34,13 @@ namespace MB.PdfTools
     {
         public string[] Files { get; private set; }
         public string OutFile { get; private set; }
+        public string Orientation { get; private set; }
 
-        public MergeCommandParameters(IEnumerable<string> files, string outFiile)
+        public MergeCommandParameters(IEnumerable<string> files, string outFiile, string orientation)
         {
             Files = files.ToArray();
             OutFile = outFiile;
+            Orientation = orientation;
         }
     }
 
@@ -65,15 +67,32 @@ namespace MB.PdfTools
                     else if (file.ToLower().EndsWith(".jpg") || file.ToLower().EndsWith(".png"))
                     {
                         PdfPage page = outPdf.AddPage();
+
                         // page.Size = PdfSharpCore.PageSize.A5;
+
                         XGraphics gfx = XGraphics.FromPdfPage(page);
                         XImage image = XImage.FromFile(file);
 
                         float imgX = image.PixelWidth;
                         float imgY = image.PixelHeight;
 
+                        page.Orientation = PdfSharpCore.PageOrientation.Portrait;
+                        
+                        if (commandParameters.Orientation == "l")
+                            page.Orientation = PdfSharpCore.PageOrientation.Landscape;
+
+                        if (commandParameters.Orientation == "a" && imgX > imgY) // auto orientation
+                            page.Orientation = PdfSharpCore.PageOrientation.Landscape;
+
                         float pageX = (int)page.MediaBox.Size.Width;
                         float pageY = (int)page.MediaBox.Size.Height;
+
+                        if (page.Orientation == PdfSharpCore.PageOrientation.Landscape)
+                        {
+                            var tmp = pageX;
+                            pageX = pageY;
+                            pageY = tmp;
+                        }
 
                         var imgRatio = imgX / imgY;
                         var pageRatio = pageX / pageY;
