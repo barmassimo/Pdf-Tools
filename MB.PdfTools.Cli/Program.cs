@@ -12,7 +12,7 @@ var builder = new ConfigurationBuilder().AddCommandLine(args);
 var configuration = builder.Build();
 
 var help = $@"Description:
-An utility to merge and split pdf files and images
+  PdfTools is a command line utility to merge and split pdf files and images
 
 Usage:
   {executableName} command files [options]
@@ -28,7 +28,7 @@ Parameters:
 Options:
   --outFile, --of:  output file name (the default is merged_yyyyMMdd_HHmmss.pdf)
 
-Example:
+Examples:
   {executableName} m mydoc.pdf logo1.png logo2.jpg --outFile=merged.pdf
 
 ## split
@@ -41,9 +41,11 @@ Parameters:
 Options:
   --outFile, --of:  output file name (the default is splitted_yyyyMMdd_HHmmss_n.jpg)
 
-Example:
+Examples:
   {executableName} s mydoc.pdf --outFile=hello
-  (generates hello_0001.jpg, hello_0002.jpg, ...)
+  {executableName} s mydoc.pdf --outFile=hello.jpg
+
+  both commands create: hello_0001.jpg, hello_0002.jpg, ...
 ";
 
 args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
