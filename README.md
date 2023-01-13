@@ -10,7 +10,7 @@ See command help:
 
 # Todo
 - ~~split command~~
-- handle ghostscript not installed error
+- ~~handle ghostscript not installed error~~
 - ~~landscape option~~
 - page size and image quality options
 

@@ -172,7 +172,15 @@ namespace MB.PdfTools
                 {
                     sbOut.Append($"Splitting file '{file}'... ");
 
-                    images.Read(file, settings);
+                    try
+                    {
+                        images.Read(file, settings);
+                    }
+                    catch (ImageMagick.MagickDelegateErrorException ex)
+                    {
+                        sbOut.AppendLine($"\nERROR: cannot create images; please check that Ghostscript is installed on your machine (see command help for details)");
+                        return CommandResult.Error(ex.Message, sbOut.ToString());
+                    }
 
                     foreach (var image in images)
                     {
