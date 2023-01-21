@@ -1,15 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MB.PdfTools.Cli;
 using System.Reflection;
 
-using MB.PdfTools;
-
 var executableName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
-
-Console.WriteLine($"PdfTools v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
-Console.WriteLine();
-
-var builder = new ConfigurationBuilder().AddCommandLine(args);
-var configuration = builder.Build();
 
 var help = $@"Description:
   PdfTools is a command line utility to merge and split pdf files and images
@@ -50,104 +42,37 @@ Examples:
   both commands create: hello_0001.jpg, hello_0002.jpg, ...
 ";
 
-args = args.Where(x => !x.StartsWith("--")).ToArray(); // remove options
-
-string? command = null;
-
-if (args.Length > 0)
-{
-    command = args[0];
-    args = args.Skip(1).ToArray();
-}
+Console.WriteLine($"PdfTools v." + Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
+Console.WriteLine();
 
 if (args.Length == 0)
 {
     Console.WriteLine(help);
+    return 0;
+}
+
+CommandContext ctx;
+
+try
+{
+    ctx = CommandContext.FromCommandLineArgs(args);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"{ex.Message} See help for details.");
     return 1;
 }
 
-if (command == "m" || command == "merge")
+var result = new CommandBuilder().BuildCommand(ctx).Execute();
+
+if (result.IsOk)
 {
-    foreach (var file in args)
-    {
-        var info = new FileInfo(file);
-
-        if (!info.Exists)
-        {
-            Console.WriteLine($"File '{file}' not found. Exiting.");
-            return 1;
-        }
-
-        var extension = info.Extension.ToLower();
-
-        if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
-        {
-            Console.WriteLine($"Only pdf, jpg and png files accepted. Exiting");
-            return 1;
-        }
-    }
-
-    var outFile = configuration["outFile"] ?? configuration["of"] ?? "merged_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf";
-    var orientation = configuration["orientation"] ?? configuration["or"];
-
-    var result = new MergeCommand().Execute(new MergeCommandParameters(args, outFile, orientation));
-    if (result.IsOk)
-    {
-        Console.WriteLine(result.Output);
-        return 0;
-    }
-    else
-    {
-        Console.WriteLine(result.Output);
-        Console.WriteLine(result.ErrorMessage);
-        return 1;
-    }
-}
-else if (command == "s" || command == "split")
-{
-    foreach (var file in args)
-    {
-        var info = new FileInfo(file);
-
-        if (!info.Exists)
-        {
-            Console.WriteLine($"File '{file}' not found. Exiting.");
-            return 1;
-        }
-
-        var extension = info.Extension.ToLower();
-
-        if (extension != ".pdf")
-        {
-            Console.WriteLine($"Only pdf files accepted. Exiting");
-            return 1;
-        }
-    }
-
-    var outFile = configuration["outFile"] ?? configuration["of"] ?? "splitted_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-
-    if (outFile.ToLower().EndsWith(".jpg"))
-    {
-        outFile = outFile.Substring(0, outFile.Length - 4);
-    }
-
-    var result = new SplitCommand().Execute(new SplitCommandParameters(args, outFile));
-    if (result.IsOk)
-    {
-        Console.WriteLine(result.Output);
-        return 0;
-    }
-    else
-    {
-        Console.WriteLine(result.Output);
-        Console.WriteLine(result.ErrorMessage);
-        return 1;
-    }
+    Console.WriteLine(result.Output);
+    return 0;
 }
 else
 {
-    Console.WriteLine($"Command '{command}' not available. Exiting.");
+    Console.WriteLine(result.Output);
+    Console.WriteLine(result.ErrorMessage);
     return 1;
 }
-
-

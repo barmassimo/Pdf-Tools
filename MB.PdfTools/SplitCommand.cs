@@ -3,11 +3,33 @@ using ImageMagick;
 
 namespace MB.PdfTools
 {
-    public class SplitCommand : ICommand<SplitCommandParameters>
+    public class SplitCommand : ICommand
     {
-        public CommandResult Execute(SplitCommandParameters commandParameters)
+        private SplitCommandParameters _commandParameters;
+
+        public SplitCommand(SplitCommandParameters commandParameters)
+        {
+            _commandParameters = commandParameters;
+        }
+
+        public CommandResult Execute()
         {
             var sbOut = new StringBuilder();
+
+            // checking files
+            foreach (var file in _commandParameters.Files)
+            {
+                var info = new FileInfo(file);
+
+                if (!info.Exists)
+                    return CommandResult.Error($"File '{file}' not found.", sbOut.ToString());
+
+                var extension = info.Extension.ToLower();
+
+                if (extension != ".pdf")
+                    return CommandResult.Error($"Only pdf files accepted.", sbOut.ToString());
+            }
+
             var totalPages = 1;
 
             //MagickNET.SetGhostscriptDirectory(@"c:\ghostScript");
@@ -15,7 +37,7 @@ namespace MB.PdfTools
             var settings = new MagickReadSettings();
             settings.Density = new Density(300, 300);
 
-            foreach (var file in commandParameters.Files)
+            foreach (var file in _commandParameters.Files)
             {
                 using (var images = new MagickImageCollection())
                 {
@@ -34,7 +56,7 @@ namespace MB.PdfTools
                     foreach (var image in images)
                     {
                         image.Format = MagickFormat.Jpg;
-                        image.Write($"{commandParameters.OutFile}_{totalPages++:0000}.jpg");
+                        image.Write($"{_commandParameters.OutFile}_{totalPages++:0000}.jpg");
                     }
 
                     sbOut.AppendLine($"Ok ({images.Count} pages)");

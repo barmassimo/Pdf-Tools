@@ -5,15 +5,36 @@ using System.Text;
 
 namespace MB.PdfTools
 {
-    public class MergeCommand : ICommand<MergeCommandParameters>
+    public class MergeCommand : ICommand
     {
-        public CommandResult Execute(MergeCommandParameters commandParameters)
+        private MergeCommandParameters _commandParameters;
+
+        public MergeCommand(MergeCommandParameters commandParameters)
+        {
+            _commandParameters = commandParameters;
+        }
+
+        public CommandResult Execute()
         {
             var sbOut = new StringBuilder();
 
+            // checking files
+            foreach (var file in _commandParameters.Files)
+            {
+                var info = new FileInfo(file);
+
+                if (!info.Exists)
+                    return CommandResult.Error($"File '{file}' not found.", sbOut.ToString());
+
+                var extension = info.Extension.ToLower();
+
+                if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
+                    return CommandResult.Error($"Only pdf, jpg and png files accepted.", sbOut.ToString());
+            }
+
             using (PdfDocument outPdf = new PdfDocument())
             {
-                foreach (var file in commandParameters.Files)
+                foreach (var file in _commandParameters.Files)
                 {
                     sbOut.Append($"Adding file '{file}'... ");
 
@@ -37,12 +58,12 @@ namespace MB.PdfTools
                         float imgX = image.PixelWidth;
                         float imgY = image.PixelHeight;
 
-                        page.Orientation = PdfSharpCore.PageOrientation.Portrait;
+                        page.Orientation = PdfSharpCore.PageOrientation.Portrait; // default
                         
-                        if (commandParameters.Orientation == "l")
+                        if (_commandParameters.Orientation == "l")
                             page.Orientation = PdfSharpCore.PageOrientation.Landscape;
 
-                        if (commandParameters.Orientation == "a" && imgX > imgY) // auto orientation
+                        if (_commandParameters.Orientation == "a" && imgX > imgY) // auto orientation
                             page.Orientation = PdfSharpCore.PageOrientation.Landscape;
 
                         float pageX = (int)page.MediaBox.Size.Width;
@@ -83,10 +104,10 @@ namespace MB.PdfTools
                     }
                 }
 
-                outPdf.Save(commandParameters.OutFile);
+                outPdf.Save(_commandParameters.OutFile);
 
                 sbOut.AppendLine();
-                sbOut.AppendLine($"File '{commandParameters.OutFile}' created.");
+                sbOut.AppendLine($"File '{_commandParameters.OutFile}' created.");
 
                 return CommandResult.Ok(sbOut.ToString());
             }

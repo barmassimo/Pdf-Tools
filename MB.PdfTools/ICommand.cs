@@ -1,7 +1,7 @@
 ﻿namespace MB.PdfTools
 {
-    public interface ICommand<T>
+    public interface ICommand
     {
-        public CommandResult Execute(T commandParameters);
+        public CommandResult Execute();
     }
 }

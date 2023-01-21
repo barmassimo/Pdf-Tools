@@ -5,10 +5,10 @@
         public string[] Files { get; private set; }
         public string OutFile { get; private set; }
 
-        public SplitCommandParameters(IEnumerable<string> files, string outFiile)
+        public SplitCommandParameters(IEnumerable<string> files, string outFile)
         {
             Files = files.ToArray();
-            OutFile = outFiile;
+            OutFile = outFile;
         }
     }
 }
