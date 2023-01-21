@@ -5,7 +5,12 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MB.PdfTools.Cli", "MB.PdfTools.Cli\MB.PdfTools.Cli.csproj", "{97794BC2-7CC7-41B4-B927-99DE045D6AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MB.PdfTools", "MB.PdfTools\MB.PdfTools.csproj", "{699A094B-BCB6-4048-A864-37F11A2C8414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MB.PdfTools", "MB.PdfTools\MB.PdfTools.csproj", "{699A094B-BCB6-4048-A864-37F11A2C8414}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AFF01CA1-720A-48D3-8A14-285B594FFEC6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

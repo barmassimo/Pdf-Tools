@@ -13,6 +13,7 @@ See command help:
 - ~~handle ghostscript not installed error~~
 - ~~landscape option~~
 - page size and image quality options
+- better command line args handling
 
 # Dependencies
 
