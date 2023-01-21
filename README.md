@@ -8,20 +8,19 @@ See command help:
 
 ![](screenshot.png)
 
-# Todo
+## Todo
 - ~~split command~~
 - ~~handle ghostscript not installed error~~
 - ~~landscape option~~
 - page size and image quality options
 - ~~better command line args handling~~
 
-# Dependencies
-
-## Libraries
+## Environment
+- .NET Core 6.0
 - Magick.NET.Core
 - PdfSharpCore
 
-## Software
+## Required software
 - [Ghostscript](https://ghostscript.com/releases/gsdnld.html) needs to be installed on your machine (*split* command only)
 
 ## License
