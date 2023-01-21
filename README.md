@@ -1,7 +1,7 @@
 PdfTools
 ==============
 
-PdfTools is an utility to merge and split pdf files and images
+PdfTools is an utility to merge and split pdf files and images.
 
 ## Usage
 See command help:
