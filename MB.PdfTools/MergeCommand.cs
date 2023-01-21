@@ -2,48 +2,9 @@
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System.Text;
-using ImageMagick;
 
 namespace MB.PdfTools
 {
-    public interface ICommand<T>
-    {
-        public CommandResult Execute(T commandParameters);
-    }
-
-    public class CommandResult
-    {
-        public string Output { get; set; }
-        public string ErrorMessage { get; private set; }
-        public bool IsOk { get { return ErrorMessage == null; } }
-
-        public static CommandResult Error(string errorMessage, string output)
-        {
-            return new CommandResult { ErrorMessage = errorMessage, Output = output };
-        }
-
-        public static CommandResult Ok(string output)
-        {
-            return new CommandResult { Output = output };
-        }
-
-        private CommandResult() { }
-    }
-
-    public class MergeCommandParameters
-    {
-        public string[] Files { get; private set; }
-        public string OutFile { get; private set; }
-        public string Orientation { get; private set; }
-
-        public MergeCommandParameters(IEnumerable<string> files, string outFiile, string orientation)
-        {
-            Files = files.ToArray();
-            OutFile = outFiile;
-            Orientation = orientation;
-        }
-    }
-
     public class MergeCommand : ICommand<MergeCommandParameters>
     {
         public CommandResult Execute(MergeCommandParameters commandParameters)
@@ -139,63 +100,6 @@ namespace MB.PdfTools
             }
 
             return from.PageCount;
-        }
-    }
-
-    public class SplitCommandParameters
-    {
-        public string[] Files { get; private set; }
-        public string OutFile { get; private set; }
-
-        public SplitCommandParameters(IEnumerable<string> files, string outFiile)
-        {
-            Files = files.ToArray();
-            OutFile = outFiile;
-        }
-    }
-
-    public class SplitCommand : ICommand<SplitCommandParameters>
-    {
-        public CommandResult Execute(SplitCommandParameters commandParameters)
-        {
-            var sbOut = new StringBuilder();
-            var totalPages = 1;
-
-            //MagickNET.SetGhostscriptDirectory(@"c:\ghostScript");
-
-            var settings = new MagickReadSettings();
-            settings.Density = new Density(300, 300);
-
-            foreach (var file in commandParameters.Files)
-            {
-                using (var images = new MagickImageCollection())
-                {
-                    sbOut.Append($"Splitting file '{file}'... ");
-
-                    try
-                    {
-                        images.Read(file, settings);
-                    }
-                    catch (ImageMagick.MagickDelegateErrorException ex)
-                    {
-                        sbOut.AppendLine($"\nERROR: cannot create images; please check that Ghostscript is installed on your machine (see command help for details)");
-                        return CommandResult.Error(ex.Message, sbOut.ToString());
-                    }
-
-                    foreach (var image in images)
-                    {
-                        image.Format = MagickFormat.Jpg;
-                        image.Write($"{commandParameters.OutFile}_{totalPages++:0000}.jpg");
-                    }
-
-                    sbOut.AppendLine($"Ok ({images.Count} pages)");
-                }
-            }
-
-            sbOut.AppendLine();
-            sbOut.AppendLine($"File(s) created.");
-
-            return CommandResult.Ok(sbOut.ToString());
         }
     }
 }
