@@ -10,7 +10,6 @@
         {
             ArgumentNullException.ThrowIfNull(files);
             ArgumentNullException.ThrowIfNull(outFile);
-            ArgumentNullException.ThrowIfNull(orientation);
 
             Files = files.ToArray();
             OutFile = outFile;
