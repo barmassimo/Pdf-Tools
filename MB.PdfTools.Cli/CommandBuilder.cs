@@ -10,6 +10,8 @@ namespace MB.PdfTools.Cli
     {
         public ICommand BuildCommand(CommandContext ctx)
         {
+            ArgumentNullException.ThrowIfNull(ctx);
+
             switch (ctx.Command)
             {
                 case Command.Merge:

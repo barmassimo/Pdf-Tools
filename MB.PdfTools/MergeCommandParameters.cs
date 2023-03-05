@@ -8,6 +8,10 @@
 
         public MergeCommandParameters(IEnumerable<string> files, string outFile, string? orientation)
         {
+            ArgumentNullException.ThrowIfNull(files);
+            ArgumentNullException.ThrowIfNull(outFile);
+            ArgumentNullException.ThrowIfNull(orientation);
+
             Files = files.ToArray();
             OutFile = outFile;
             Orientation = orientation;

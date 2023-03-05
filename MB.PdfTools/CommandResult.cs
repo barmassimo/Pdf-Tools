@@ -8,11 +8,16 @@
 
         public static CommandResult Error(string errorMessage, string output)
         {
+            ArgumentNullException.ThrowIfNull(errorMessage);
+            ArgumentNullException.ThrowIfNull(output);
+
             return new CommandResult { ErrorMessage = errorMessage, Output = output };
         }
 
         public static CommandResult Ok(string output)
         {
+            ArgumentNullException.ThrowIfNull(output);
+
             return new CommandResult { Output = output };
         }
 

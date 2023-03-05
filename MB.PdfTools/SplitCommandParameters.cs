@@ -7,6 +7,9 @@
 
         public SplitCommandParameters(IEnumerable<string> files, string outFile)
         {
+            ArgumentNullException.ThrowIfNull(files);
+            ArgumentNullException.ThrowIfNull(outFile);
+
             Files = files.ToArray();
             OutFile = outFile;
         }

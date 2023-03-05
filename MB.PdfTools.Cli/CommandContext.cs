@@ -19,6 +19,8 @@ namespace MB.PdfTools.Cli
 
         public static CommandContext FromCommandLineArgs(string[] args)
         {
+            ArgumentNullException.ThrowIfNull(args);
+
             var result = new CommandContext();
 
             var builder = new ConfigurationBuilder().AddCommandLine(args);
@@ -74,6 +76,8 @@ namespace MB.PdfTools.Cli
 
         private void AddFiles(IEnumerable<string> files)
         {
+            ArgumentNullException.ThrowIfNull(files);
+
             foreach (var f in files)
             {
                 ((List<string>)Files).Add(f);

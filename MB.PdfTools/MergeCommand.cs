@@ -11,6 +11,8 @@ namespace MB.PdfTools
 
         public MergeCommand(MergeCommandParameters commandParameters)
         {
+            ArgumentNullException.ThrowIfNull(commandParameters);
+
             _commandParameters = commandParameters;
         }
 
@@ -115,6 +117,9 @@ namespace MB.PdfTools
 
         private int CopyPages(PdfDocument from, PdfDocument to)
         {
+            ArgumentNullException.ThrowIfNull(from);
+            ArgumentNullException.ThrowIfNull(to);
+
             for (int i = 0; i < from.PageCount; i++)
             {
                 to.AddPage(from.Pages[i]);
